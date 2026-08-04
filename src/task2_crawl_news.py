@@ -33,10 +33,16 @@ def setup_directory():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
-# TODO: Điền danh sách URL bài viết cần crawl
 ARTICLE_URLS = [
-    # Ví dụ (trang công khai Shopee Vietnam):
-    # "https://help.shopee.vn/portal/4/article/...",
+    # Theo dõi đơn hàng
+    "https://help.shopee.vn/portal/4/article/79600-Theo-D%C3%B5i-%C4%90%C6%A1n-H%C3%A0ng-T%E1%BA%A1i-M%E1%BB%A5c-%22Tr%C3%B2-Chuy%E1%BB%87n-V%E1%BB%9Bi-Shopee%22",
+    "https://help.shopee.vn/portal/4/article/79491-%5BThao-t%C3%A1c%5D-C%C3%A1ch-tra-c%E1%BB%A9u-m%C3%A3-v%E1%BA%ADn-%C4%91%C6%A1n-c%E1%BB%A7a-%C4%91%C6%A1n-h%C3%A0ng",
+    # Đổi phương thức thanh toán
+    "https://help.shopee.vn/portal/4/article/79555-%5BTh%C3%A0nh-vi%C3%AAn-m%E1%BB%9Bi%5D-T%C3%B4i-c%C3%B3-th%E1%BB%83-thay-%C4%91%E1%BB%95i-ph%C6%B0%C6%A1ng-th%E1%BB%A9c-thanh-to%C3%A1n-cho-%C4%91%C6%A1n-h%C3%A0ng-kh%C3%B4ng",
+    # Bằng chứng hoàn tiền
+    "https://help.shopee.vn/portal/4/article/79467-%5BTr%E1%BA%A3-h%C3%A0ng/Ho%C3%A0n-ti%E1%BB%81n%5D-H%C6%B0%E1%BB%9Bng-d%E1%BA%ABn-chu%E1%BA%A9n-b%E1%BB%8B-b%E1%BA%B1ng-ch%E1%BB%A9ng-khi-y%C3%AAu-c%E1%BA%A7u-Tr%E1%BA%A3-h%C3%A0ng/-Ho%C3%A0n-ti%E1%BB%81n",
+    # Mua hàng xuyên biên giới
+    "https://help.shopee.vn/portal/4/article/79377-%5BTh%C3%A0nh-vi%C3%AAn-m%E1%BB%9Bi%5D-T%C3%B4i-c%C3%B3-th%E1%BB%83-mua-h%C3%A0ng-tr%C3%AAn-Shopee-c%E1%BB%A7a-nh%E1%BB%AFng-qu%E1%BB%91c-gia-kh%C3%A1c-ngo%C3%A0i-Vi%E1%BB%87t-Nam-kh%C3%B4ng",
 ]
 
 
@@ -54,16 +60,14 @@ async def crawl_article(url: str) -> dict:
     """
     from crawl4ai import AsyncWebCrawler
 
-    # TODO: Implement crawling logic
-    # async with AsyncWebCrawler() as crawler:
-    #     result = await crawler.arun(url=url)
-    #     return {
-    #         "url": url,
-    #         "title": result.metadata.get("title", "Unknown"),
-    #         "date_crawled": datetime.now().isoformat(),
-    #         "content_markdown": result.markdown,
-    #     }
-    raise NotImplementedError("Implement crawl_article")
+    async with AsyncWebCrawler() as crawler:
+        result = await crawler.arun(url=url)
+        return {
+            "url": url,
+            "title": result.metadata.get("title", "Unknown"),
+            "date_crawled": datetime.now().isoformat(),
+            "content_markdown": result.markdown,
+        }
 
 
 async def crawl_all():
@@ -77,7 +81,7 @@ async def crawl_all():
         # Lưu file JSON
         filename = f"article_{i:02d}.json"
         filepath = DATA_DIR / filename
-        filepath.write_text(json.dumps(article, ensure_ascii=False, indent=2))
+        filepath.write_text(json.dumps(article, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"  ✓ Saved: {filepath}")
 
 
