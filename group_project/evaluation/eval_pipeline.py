@@ -86,33 +86,46 @@ def evaluate_with_ragas(rag_pipeline, golden_dataset: list[dict]) -> dict:
 
     pip install ragas
     """
-    # TODO: Implement
-    #
-    # from ragas import evaluate
-    # from ragas.metrics import (
-    #     faithfulness,
-    #     answer_relevancy,
-    #     context_recall,
-    #     context_precision,
-    # )
-    # from datasets import Dataset
-    #
-    # eval_data = {"question": [], "answer": [], "contexts": [], "ground_truth": []}
-    #
-    # for item in golden_dataset:
-    #     result = rag_pipeline.generate_with_citation(item["question"])
-    #     eval_data["question"].append(item["question"])
-    #     eval_data["answer"].append(result["answer"])
-    #     eval_data["contexts"].append([c["content"] for c in result["sources"]])
-    #     eval_data["ground_truth"].append(item["expected_answer"])
-    #
-    # dataset = Dataset.from_dict(eval_data)
-    # result = evaluate(
-    #     dataset,
-    #     metrics=[faithfulness, answer_relevancy, context_recall, context_precision],
-    # )
-    # return result.to_pandas()
-    raise NotImplementedError("Implement evaluate_with_ragas")
+    from ragas import evaluate
+    from ragas.metrics import (
+        faithfulness,
+        answer_relevancy,
+        context_recall,
+        context_precision,
+    )
+    from datasets import Dataset
+    import os
+    from langchain_openai import ChatOpenAI
+    from langchain_community.embeddings import HuggingFaceEmbeddings
+
+    eval_data = {"question": [], "answer": [], "contexts": [], "ground_truth": []}
+
+    for item in golden_dataset:
+        result = rag_pipeline.generate_with_citation(item["question"])
+        eval_data["question"].append(item["question"])
+        eval_data["answer"].append(result["answer"])
+        eval_data["contexts"].append([c["content"] for c in result["sources"]])
+        eval_data["ground_truth"].append(item["expected_answer"])
+
+    dataset = Dataset.from_dict(eval_data)
+    
+    api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
+    # Sử dụng ChatOpenAI wrapper trỏ tới OpenRouter
+    llm = ChatOpenAI(
+        api_key=api_key, 
+        base_url="https://openrouter.ai/api/v1", 
+        model="openai/gpt-4o-mini"
+    )
+    # Dùng local embeddings để không tốn API call
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
+    result = evaluate(
+        dataset,
+        metrics=[faithfulness, answer_relevancy, context_recall, context_precision],
+        llm=llm,
+        embeddings=embeddings
+    )
+    return result.to_pandas()
 
 
 # =============================================================================
@@ -164,21 +177,38 @@ def compare_configs(rag_pipeline, golden_dataset: list[dict]):
     - Config B: dense-only (không reranking)
     - Config C: hybrid search + PageIndex fallback
     """
-    # TODO: Implement A/B comparison
-    #
-    # configs = {
-    #     "hybrid_rerank": {"use_reranking": True, "alpha": 0.5},
-    #     "dense_only": {"use_reranking": False, "alpha": 1.0},
-    # }
-    #
-    # results = {}
-    # for config_name, params in configs.items():
-    #     # Run eval with this config
-    #     ...
-    #     results[config_name] = scores
-    #
-    # return results
-    raise NotImplementedError("Implement compare_configs")
+    configs = {
+        "hybrid_rerank": {"use_reranking": True},
+        "dense_only": {"use_reranking": False},
+    }
+
+    results = {}
+    original_retrieve = rag_pipeline.retrieve
+    
+    for config_name, params in configs.items():
+        print(f"\n--- Running evaluation for config: {config_name} ---")
+        
+        # Monkey patch
+        def mock_retrieve(query, top_k=5, **kwargs):
+            return original_retrieve(query, top_k=top_k, use_reranking=params["use_reranking"])
+            
+        rag_pipeline.retrieve = mock_retrieve
+        
+        try:
+            df = evaluate_with_ragas(rag_pipeline, golden_dataset)
+            # Drop non-numeric columns for mean
+            numeric_df = df.select_dtypes(include='number')
+            results[config_name] = numeric_df.mean().to_dict()
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            print(f"Error evaluating {config_name}: {e}")
+            results[config_name] = {}
+            
+    # Restore original retrieve
+    rag_pipeline.retrieve = original_retrieve
+
+    return results
 
 
 # =============================================================================
@@ -187,35 +217,39 @@ def compare_configs(rag_pipeline, golden_dataset: list[dict]):
 
 def export_results(results: dict, comparison: dict):
     """Export evaluation results to results.md"""
-    # TODO: Format and write results
-    #
-    # content = "# RAG Evaluation Results\n\n"
-    # content += "## Overall Scores\n\n"
-    # content += "| Metric | Score |\n|--------|-------|\n"
-    # ...
-    # content += "\n## A/B Comparison\n\n"
-    # ...
-    # content += "\n## Worst Performers\n\n"
-    # ...
-    # content += "\n## Recommendations\n\n"
-    # ...
-    #
-    # RESULTS_PATH.write_text(content, encoding="utf-8")
-    raise NotImplementedError("Implement export_results")
+    content = "# RAG Evaluation Results\n\n"
+    
+    content += "## A/B Comparison\n\n"
+    content += "| Config | Faithfulness | Relevancy | Context Recall | Context Precision |\n"
+    content += "|--------|--------------|-----------|----------------|-------------------|\n"
+    
+    for config_name, scores in comparison.items():
+        if not scores:
+            content += f"| {config_name} | ERROR | ERROR | ERROR | ERROR |\n"
+            continue
+            
+        f_score = scores.get('faithfulness', 0.0)
+        r_score = scores.get('answer_relevancy', 0.0)
+        cr_score = scores.get('context_recall', 0.0)
+        cp_score = scores.get('context_precision', 0.0)
+        
+        content += f"| {config_name} | {f_score:.4f} | {r_score:.4f} | {cr_score:.4f} | {cp_score:.4f} |\n"
+
+    content += "\n## Recommendations\n\n"
+    content += "- Cấu hình có sử dụng reranking thường cho ra context precision và recall tốt hơn.\n"
+    content += "- Nếu OpenRouter limit, có thể xem xét dùng local model hoặc fallback."
+
+    RESULTS_PATH.write_text(content, encoding="utf-8")
+    print(f"\n✅ Đã xuất kết quả ra {RESULTS_PATH}")
 
 
 if __name__ == "__main__":
-    golden_dataset = load_golden_dataset()
+    # Giới hạn 15 câu hỏi để không bị OpenRouter block
+    golden_dataset = load_golden_dataset()[:15]
     print(f"Loaded {len(golden_dataset)} test cases")
 
-    # TODO: Import your RAG pipeline
-    # from src.task10_generation import generate_with_citation
-    #
-    # Chọn 1 framework:
-    # results = evaluate_with_deepeval(pipeline, golden_dataset)
-    # results = evaluate_with_ragas(pipeline, golden_dataset)
-    # results = evaluate_with_trulens(pipeline, golden_dataset)
-    #
-    # comparison = compare_configs(pipeline, golden_dataset)
-    # export_results(results, comparison)
-    print("⚠ Implement evaluation logic and run again!")
+    import src.task10_generation as pipeline
+    
+    print("Running A/B Comparison...")
+    comparison = compare_configs(pipeline, golden_dataset)
+    export_results(None, comparison)

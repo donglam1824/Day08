@@ -55,8 +55,8 @@ CHUNK_OVERLAP = 100      # Vì sao chọn 50? ...
 CHUNKING_METHOD = "recursive"  # "recursive" | "markdown_header" | "semantic"
 
 # TODO: Chọn embedding model và giải thích
-EMBEDDING_MODEL = "BAAI/bge-m3"  # Vì sao? Multilingual, tốt cho tiếng Việt lẫn tiếng Anh
-EMBEDDING_DIM = 1024
+EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+EMBEDDING_DIM = 384
 
 # TODO: Chọn vector store
 VECTOR_STORE = "chromadb"  # "chromadb" | "weaviate" | "faiss"

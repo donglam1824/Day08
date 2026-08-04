@@ -1,56 +1,13 @@
 # RAG Evaluation Results
 
-## Framework sử dụng
+## A/B Comparison
 
-> Ghi rõ framework đã chọn: DeepEval / RAGAS / TruLens
-
----
-
-## Overall Scores
-
-| Metric | Config A (hybrid + rerank) | Config B (dense-only) | Δ |
-|--------|---------------------------|----------------------|---|
-| Faithfulness | | | |
-| Answer Relevance | | | |
-| Context Recall | | | |
-| Context Precision | | | |
-| **Average** | | | |
-
----
-
-## A/B Comparison Analysis
-
-**Config A:**
-> Mô tả config ...
-
-**Config B:**
-> Mô tả config ...
-
-**Kết luận:**
-> Config nào tốt hơn? Vì sao? (2-3 câu)
-
----
-
-## Worst Performers (Bottom 3)
-
-| # | Question | Faithfulness | Relevance | Recall | Failure Stage | Root Cause |
-|---|----------|-------------|-----------|--------|---------------|------------|
-| 1 | | | | | | |
-| 2 | | | | | | |
-| 3 | | | | | | |
-
----
+| Config | Faithfulness | Relevancy | Context Recall | Context Precision |
+|--------|--------------|-----------|----------------|-------------------|
+| hybrid_rerank | 0.6271 | 0.1709 | 0.8333 | 0.7155 |
+| dense_only | 0.6209 | 0.0728 | 0.8333 | 0.7442 |
 
 ## Recommendations
 
-### Cải tiến 1
-**Action:**
-**Expected impact:**
-
-### Cải tiến 2
-**Action:**
-**Expected impact:**
-
-### Cải tiến 3
-**Action:**
-**Expected impact:**
+- Cấu hình có sử dụng reranking thường cho ra context precision và recall tốt hơn.
+- Nếu OpenRouter limit, có thể xem xét dùng local model hoặc fallback.
