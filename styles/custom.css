@@ -1,0 +1,241 @@
+/* CSS tùy chỉnh cho Shopee Legal Assistant */
+
+/* Đặt biến CSS (Màu sắc) */
+:root {
+    --bg-color: #F5F5F5; /* Shopee light gray background */
+    --surface-color: #FFFFFF;
+    --primary-color: #EE4D2D; /* Shopee primary orange */
+    --secondary-color: #FF7337; /* Shopee light orange */
+    --accent-color: #EE4D2D; /* Shopee primary orange */
+    --text-color: #222222; /* Shopee dark text */
+    --text-secondary: #757575; /* Shopee gray text */
+    --border-color: #E8E8E8; /* Light gray */
+    
+    /* Semantic */
+    --warning-color: #F59E0B;
+    --error-color: #EF4444;
+    --success-color: #10B981;
+}
+
+/* Ẩn Hamburger menu và Footer mặc định của Streamlit */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;} /* Ẩn header mặc định nếu muốn tuỳ chỉnh hoàn toàn, tuy nhiên st.set_page_config cũng cần */
+
+/* Định dạng tổng thể */
+.stApp {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Khu vực Chat content max-width */
+.stChatFloatingInputContainer {
+    max-width: 900px !important;
+    margin: 0 auto;
+}
+
+.stChatMessageContainer {
+    max-width: 900px !important;
+    margin: 0 auto;
+}
+
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 5rem; /* Space cho input */
+    max-width: 950px;
+}
+
+/* Tùy chỉnh Nút bấm */
+.stButton > button {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    transition: all 0.2s ease-in-out;
+}
+
+.stButton > button:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: #F1F5F9;
+}
+
+/* Primary Button (Cuộc trò chuyện mới) */
+div[data-testid="stSidebar"] .stButton > button {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    border: none;
+    margin-bottom: 1rem;
+}
+
+div[data-testid="stSidebar"] .stButton > button:hover {
+    background-color: #D73211; /* Darker Shopee orange */
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar topics buttons (Outline) */
+div[data-testid="stSidebar"] .topics-container .stButton > button {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1px solid transparent;
+    justify-content: flex-start;
+    padding: 0.5rem;
+    font-weight: normal;
+}
+div[data-testid="stSidebar"] .topics-container .stButton > button:hover {
+    background-color: #FFF5F1; /* Very light orange background on hover */
+    border-color: var(--primary-color);
+}
+
+/* Custom Citation Cards */
+.citation-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border-left: 4px solid var(--primary-color);
+}
+
+.citation-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--primary-color);
+    margin-bottom: 4px;
+}
+
+.citation-meta {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.citation-link {
+    font-size: 0.85rem;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.citation-link:hover {
+    text-decoration: underline;
+}
+
+/* Grid Gợi ý câu hỏi (Welcome screen) */
+.suggestion-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 100%;
+}
+
+.suggestion-card:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 1.05rem;
+}
+
+.suggestion-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Chat Bubbles custom */
+/* Note: Streamlit's chat message uses data-testid="stChatMessage" */
+div[data-testid="stChatMessage"] {
+    background-color: var(--surface-color);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+/* User Message */
+div[data-testid="stChatMessage"]:has(div:contains("user")) {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    margin-left: auto;
+    width: fit-content;
+    max-width: 80%;
+}
+div[data-testid="stChatMessage"]:has(div:contains("user")) p {
+    color: white;
+}
+div[data-testid="stChatMessage"]:has(div:contains("user")) svg {
+    display: none; /* Hide default icon if wanted, but Streamlit handles this */
+}
+
+/* Disclaimer text */
+.legal-disclaimer {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #FEF3C7; /* Amber-50 */
+    border: 1px solid #FDE68A; /* Amber-200 */
+    border-radius: 8px;
+    color: #92400E; /* Amber-900 */
+}
+
+/* Status indicator */
+.status-indicator {
+    font-size: 0.85rem;
+    color: var(--success-color);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--success-color);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Nguồn tham khảo inline status */
+.source-badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: #FFF5F1; /* Light orange tint */
+    color: var(--primary-color);
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+
+/* Feedback buttons container */
+.feedback-container {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+.feedback-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+.feedback-btn:hover {
+    background-color: #F1F5F9;
+    color: var(--primary-color);
+}
