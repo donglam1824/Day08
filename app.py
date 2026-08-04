@@ -1,149 +1,106 @@
-"""
-RAG Chatbot — E-commerce Support (Starter Template)
-Streamlit app kết nối RAG Retrieval (Task 9) và Generation (Task 10).
-
-Chạy:
-    streamlit run app.py
-"""
-
-import os
-import sys
-from pathlib import Path
-
 import streamlit as st
-from dotenv import load_dotenv
+import os
 
-load_dotenv()
-
-# Thêm project root vào sys.path để import các task từ src/
-PROJECT_ROOT = Path(__file__).parent
-sys.path.insert(0, str(PROJECT_ROOT))
-
-# =============================================================================
-# PAGE CONFIG
-# =============================================================================
-
+# Must be the first Streamlit command
 st.set_page_config(
-    page_title="E-commerce Support RAG Chatbot",
-    page_icon="🛒",
+    page_title="Shopee Legal Assistant",
+    page_icon="⚖️",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="expanded"
 )
 
-# =============================================================================
-# SIDEBAR — INFO & SETTINGS
-# =============================================================================
+from components.sidebar import render_sidebar
+from components.chat import render_welcome_screen, render_chat_messages, process_user_input
 
-with st.sidebar:
-    st.title("🛒 E-commerce Support RAG")
-    st.caption("Trợ lý hỏi đáp về chính sách thương mại điện tử và hỗ trợ khách hàng (đổi trả, thanh toán, bảo mật, người bán)")
+def load_css():
+    """Loads the custom CSS file"""
+    css_path = os.path.join(os.path.dirname(__file__), 'styles', 'custom.css')
+    if os.path.exists(css_path):
+        with open(css_path, 'r', encoding='utf-8') as f:
+            st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-    st.divider()
+def init_session_state():
+    """Initializes session state variables"""
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    
+    if "topic_prompt" not in st.session_state:
+        st.session_state.topic_prompt = None
 
-    st.subheader("💡 Câu hỏi gợi ý")
-    suggestions = [
-        "Thời hạn yêu cầu trả hàng/hoàn tiền là bao lâu?",
-        "Shopee hỗ trợ những phương thức thanh toán nào?",
-        "Làm sao để đổi phương thức thanh toán đơn hàng?",
-        "Quy định về đăng bán sản phẩm cho người bán?",
-        "Cách mua hàng trên Shopee của quốc gia khác?",
-    ]
-    for s in suggestions:
-        if st.button(s, use_container_width=True, key=f"sug_{s[:20]}"):
-            st.session_state["pending_query"] = s
+def main():
+    # Load custom styles
+    load_css()
+    
+    # Initialize session state
+    init_session_state()
+    
+    # Header
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.markdown(
+            """
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                <div style="font-size: 2rem;">⚖️</div>
+                <div>
+                    <h2 style="margin: 0; color: var(--primary-color);">Shopee Legal Assistant</h2>
+                    <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">Trợ lý pháp lý thương mại điện tử</p>
+                </div>
+            </div>
+            """, 
+            unsafe_allow_html=True
+        )
+    with col2:
+        st.markdown(
+            """
+            <div style="display: flex; justify-content: flex-end; align-items: center; height: 100%;">
+                <div class="status-indicator">
+                    <span class="status-dot"></span> AI đang hoạt động
+                </div>
+            </div>
+            """, 
+            unsafe_allow_html=True
+        )
+        
+    st.markdown("<hr style='margin: 0 0 1.5rem 0;'>", unsafe_allow_html=True)
 
-    st.divider()
-    st.subheader("⚙️ Thiết lập")
-    top_k = st.slider("Số chunks retrieval (top_k)", 3, 10, 5)
+    # Render Sidebar
+    render_sidebar()
+    
+    # Main Chat Area
+    # If no messages, show welcome screen
+    if not st.session_state.messages:
+        render_welcome_screen()
+    else:
+        # Show chat messages
+        render_chat_messages()
+        
+    # Check if a prompt was triggered by a topic/suggestion click
+    prompt = None
+    if st.session_state.topic_prompt:
+        prompt = st.session_state.topic_prompt
+        # Reset the triggered prompt
+        st.session_state.topic_prompt = None
+        
+    # User Input
+    chat_input = st.chat_input("Nhập câu hỏi pháp lý của bạn... (Ví dụ: 'Shop có phải xuất hóa đơn không?')")
+    
+    # If user typed something, use that instead
+    if chat_input:
+        prompt = chat_input
+        
+    if prompt:
+        process_user_input(prompt)
+        
+    # Global Legal Disclaimer at the bottom
+    st.markdown(
+        """
+        <div style="text-align: center; color: var(--text-secondary); font-size: 0.8rem; margin-top: 30px; padding: 15px;">
+            ⚠️ Thông tin trên chỉ mang tính chất tham khảo, không phải ý kiến tư vấn pháp lý chính thức. 
+            Đối với các vấn đề quan trọng hoặc tranh chấp cụ thể, bạn nên tham khảo ý kiến luật sư hoặc chuyên gia pháp lý.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    st.divider()
-    st.caption("**Kiến trúc hệ thống:**")
-    st.caption("Hybrid Retrieval (Semantic + BM25) → RRF Rerank → PageIndex Fallback → LLM Generation có Citation")
-
-# =============================================================================
-# SESSION STATE
-# =============================================================================
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-if "pending_query" not in st.session_state:
-    st.session_state.pending_query = None
-
-# =============================================================================
-# MAIN CHAT AREA
-# =============================================================================
-
-st.title("🛒 E-commerce Support RAG Chatbot")
-st.caption("Hệ thống hỏi đáp chính sách e-commerce và trợ giúp khách hàng")
-
-# Hiển thị lịch sử chat
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-        if msg["role"] == "assistant" and "sources" in msg and msg["sources"]:
-            with st.expander(f"📚 Nguồn tham khảo ({len(msg['sources'])} chunks)"):
-                for i, src in enumerate(msg["sources"], 1):
-                    meta = src.get("metadata", {})
-                    source_name = meta.get("source", "Unknown")
-                    doc_type = meta.get("type", "unknown")
-                    score = src.get("score", 0)
-                    st.markdown(f"**[{i}] {source_name}** `{doc_type}` | score: `{score:.4f}`")
-                    st.text(src.get("content", "")[:300] + "...")
-                    st.divider()
-
-# =============================================================================
-# QUERY HANDLING
-# =============================================================================
-
-user_input = st.chat_input("Nhập câu hỏi của bạn về chính sách/hỗ trợ e-commerce...")
-query = user_input or st.session_state.pending_query
-
-if query:
-    st.session_state.pending_query = None
-
-    # Hiển thị câu hỏi của user
-    st.session_state.messages.append({"role": "user", "content": query})
-    with st.chat_message("user"):
-        st.markdown(query)
-
-    # Sinh câu trả lời từ RAG Pipeline
-    with st.chat_message("assistant"):
-        with st.spinner("Đang tìm kiếm tài liệu và tổng hợp câu trả lời..."):
-            try:
-                # TODO (Học viên): Tích hợp hàm sinh câu trả lời từ Task 10
-                # Ví dụ:
-                # from src.task10_generation import generate_with_citation
-                # response = generate_with_citation(query, top_k=top_k)
-                # answer = response["answer"]
-                # sources = response.get("sources", [])
-
-                from src.task10_generation import generate_with_citation
-                response = generate_with_citation(query, top_k=top_k)
-                answer = response.get("answer", "Chưa thể trả lời.")
-                sources = response.get("sources", [])
-
-            except NotImplementedError:
-                answer = "⚠️ **Task 10 chưa được implement.** Hãy hoàn thành `src/task10_generation.py` để kết nối pipeline vào UI!"
-                sources = []
-            except Exception as e:
-                answer = f"❌ **Lỗi khi chạy RAG Pipeline:** {e}"
-                sources = []
-
-            st.markdown(answer)
-
-            if sources:
-                with st.expander(f"📚 Nguồn tham khảo ({len(sources)} chunks)"):
-                    for i, src in enumerate(sources, 1):
-                        meta = src.get("metadata", {})
-                        source_name = meta.get("source", "Unknown")
-                        doc_type = meta.get("type", "unknown")
-                        score = src.get("score", 0)
-                        st.markdown(f"**[{i}] {source_name}** `{doc_type}` | score: `{score:.4f}`")
-                        st.text(src.get("content", "")[:300] + "...")
-                        st.divider()
-
-    st.session_state.messages.append({
-        "role": "assistant",
-        "content": answer,
-        "sources": sources,
-    })
+if __name__ == "__main__":
+    main()
