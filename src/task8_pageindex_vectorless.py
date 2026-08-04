@@ -24,7 +24,12 @@ có field "deprecation" cảnh báo) và trả kết quả trong "retrieved_node
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+
+try:
+    from dotenv import load_dotenv
+except ImportError:  # pragma: no cover - optional dependency in this lab environment
+    def load_dotenv() -> bool:
+        return False
 
 load_dotenv()
 
