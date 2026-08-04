@@ -87,17 +87,17 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
         embeddings = model.encode(texts, show_progress_bar=False)
         return [e.tolist() for e in embeddings]
 
-    if provider == "google":
-        import google.generativeai as genai
-        genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-        result = genai.embed_content(model="models/text-embedding-004", content=texts)
-        return result["embedding"]
+    # if provider == "google":
+    #     import google.generativeai as genai
+    #     genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+    #     result = genai.embed_content(model="models/text-embedding-004", content=texts)
+    #     return result["embedding"]
 
-    if provider == "openai":
-        from openai import OpenAI
-        client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-        response = client.embeddings.create(model="text-embedding-3-small", input=texts)
-        return [d.embedding for d in response.data]
+    # if provider == "openai":
+    #     from openai import OpenAI
+    #     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    #     response = client.embeddings.create(model="text-embedding-3-small", input=texts)
+    #     return [d.embedding for d in response.data]
 
     raise ValueError(f"Unknown EMBEDDING_PROVIDER: {provider}")
 
