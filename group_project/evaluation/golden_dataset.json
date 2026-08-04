@@ -13,5 +13,90 @@
     "question": "Người bán không được đăng bán những sản phẩm nào?",
     "expected_answer": "Hàng giả/nhái, sản phẩm bất hợp pháp, vi phạm sở hữu trí tuệ, và các mặt hàng nằm trong danh sách cấm của sàn.",
     "expected_context": "Trang Product Listing Regulations, mục Prohibited Content"
+  },
+  {
+    "question": "Đối với đơn hàng do người bán tự vận chuyển, thời hạn gửi yêu cầu trả hàng/hoàn tiền là bao lâu?",
+    "expected_answer": "15 ngày kể từ khi người mua bấm 'Đã nhận được hàng', hoặc 20 ngày kể từ khi đơn hàng cập nhật trạng thái 'Lấy hàng thành công' nếu người mua không bấm nút xác nhận.",
+    "expected_context": "Trang Returns and Refunds Policy, mục 1.2 Thời gian tối đa gửi yêu cầu Trả hàng/Hoàn tiền"
+  },
+  {
+    "question": "Shopee sẽ phản hồi yêu cầu trả hàng/hoàn tiền của người mua trong bao lâu?",
+    "expected_answer": "Trong vòng 3-5 ngày làm việc (không tính thứ Bảy, Chủ Nhật và ngày nghỉ lễ theo quy định pháp luật).",
+    "expected_context": "Trang Returns and Refunds Policy, mục 1.2, phần lưu ý"
+  },
+  {
+    "question": "Những lý do nào được chấp nhận để yêu cầu trả hàng/hoàn tiền trên Shopee?",
+    "expected_answer": "Chưa nhận được hàng, thiếu hàng, người bán gửi sai hàng, hàng bể vỡ (nhiều dạng), hàng lỗi/không hoạt động, khác với mô tả, hàng đã qua sử dụng, hàng giả/nhái, và đổi ý (với điều kiện sản phẩm còn nguyên tem/nhãn mác).",
+    "expected_context": "Trang Returns and Refunds Policy, mục 1.3 Lý do Trả hàng/Hoàn tiền"
+  },
+  {
+    "question": "Trường hợp 'Đổi ý' khi trả hàng áp dụng cho ai và với điều kiện gì?",
+    "expected_answer": "Chỉ áp dụng cho người mua hạng Kim Cương, Vàng hoặc đã đăng ký thành công gói Shopee VIP, và sản phẩm trả phải còn nguyên trạng ban đầu (chưa bóc tem/khui hộp/sử dụng/lắp đặt), trừ một số sản phẩm thuộc danh sách hạn chế trả hàng hoặc mua tại Shopee Mart.",
+    "expected_context": "Trang Returns and Refunds Policy, mục 1.3, dòng 'Đổi ý (Sản phẩm còn nguyên tem, nhãn mác, bao bì)'"
+  },
+  {
+    "question": "Shop Voucher (mã giảm giá do người bán phát hành) có được hoàn lại khi trả hàng/hoàn tiền không?",
+    "expected_answer": "Không, Shop Voucher và Mã miễn phí vận chuyển sẽ không được hoàn lại trong bất kỳ trường hợp nào; người mua có thể liên hệ trực tiếp người bán để được hỗ trợ.",
+    "expected_context": "Trang Returns and Refunds Policy, mục 2 Quy định hoàn Mã giảm giá/Shopee Xu, phần lưu ý"
+  },
+  {
+    "question": "Shopee Xu được hoàn lại khi nào sau khi yêu cầu trả hàng/hoàn tiền được chấp nhận?",
+    "expected_answer": "Shopee Xu sẽ được hoàn lại ngay sau khi khiếu nại hoàn tất và người mua được chấp nhận yêu cầu hoàn tiền.",
+    "expected_context": "Trang Returns and Refunds Policy, mục 2, phần lưu ý"
+  },
+  {
+    "question": "Điều kiện để sản phẩm mua tại Shopee được bảo hành miễn phí là gì?",
+    "expected_answer": "Sản phẩm bị lỗi kỹ thuật do nhà sản xuất, còn trong thời hạn bảo hành, có hóa đơn điện tử hoặc mã đơn hàng, và tem/phiếu bảo hành của nhà sản xuất (nếu có) còn nguyên vẹn.",
+    "expected_context": "Trang Warranty Policy, mục 1 Điều kiện bảo hành"
+  },
+  {
+    "question": "Những trường hợp nào sản phẩm sẽ không được bảo hành hoặc phát sinh phí bảo hành?",
+    "expected_answer": "Vi phạm điều kiện bảo hành miễn phí, số series/model không hợp lệ, khách hàng tự ý sửa chữa hoặc sửa tại nơi không được ủy nhiệm, hoặc hư hỏng do lỗi người dùng nằm ngoài phạm vi bảo hành của nhà sản xuất.",
+    "expected_context": "Trang Warranty Policy, mục 1, phần 'Những trường hợp không được bảo hành'"
+  },
+  {
+    "question": "Thời gian bảo hành sản phẩm thông qua Shopee (khi gửi sản phẩm về Shopee) kéo dài bao lâu?",
+    "expected_answer": "Dự kiến từ 20 đến 45 ngày làm việc tính từ lúc Shopee nhận được sản phẩm, tùy thuộc vào linh kiện cần thay thế của hãng.",
+    "expected_context": "Trang Warranty Policy, mục 4b Bảo hành thông qua Shopee"
+  },
+  {
+    "question": "Chính sách bảo hành của Shopee áp dụng cho tất cả sản phẩm hay chỉ một số ngành hàng?",
+    "expected_answer": "Chỉ áp dụng cho các ngành hàng được bán bởi các nhà phân phối chính hãng cụ thể (ví dụ: Apple, Samsung, LG, Panasonic, Viettel Store...) được Shopee liệt kê, không áp dụng cho toàn bộ sản phẩm trên sàn.",
+    "expected_context": "Trang Warranty Policy, phần đầu 'Chỉ áp dụng cho ngành hàng được bán bởi các nhà phân phối sau'"
+  },
+  {
+    "question": "Shopee thu thập những loại dữ liệu cá nhân nào của người dùng?",
+    "expected_answer": "Họ tên, email, ngày sinh, địa chỉ thanh toán/giao nhận, tài khoản ngân hàng, số điện thoại, giới tính, dữ liệu thiết bị, danh sách liên hệ, hình ảnh/âm thanh/video, thông tin định danh, dữ liệu vị trí, và lịch sử giao dịch/tìm kiếm trên nền tảng.",
+    "expected_context": "Trang Privacy Policy, mục 3 Shopee sẽ thu thập những dữ liệu gì"
+  },
+  {
+    "question": "Shopee sử dụng dữ liệu cá nhân của người dùng cho những mục đích nào?",
+    "expected_answer": "Xử lý giao dịch, quản lý tài khoản, chăm sóc khách hàng, đánh giá tín dụng/rủi ro, nghiên cứu và phát triển sản phẩm, tiếp thị/quảng cáo, tuân thủ pháp luật, phòng chống gian lận, và các mục đích khác được thông báo tại thời điểm xin sự đồng ý.",
+    "expected_context": "Trang Privacy Policy, mục 6.1 Các Mục Đích sử dụng dữ liệu"
+  },
+  {
+    "question": "Shopee có chia sẻ dữ liệu cá nhân của người dùng cho bên thứ ba không, và trong trường hợp nào?",
+    "expected_answer": "Có, Shopee có thể chia sẻ dữ liệu với công ty liên kết, nhà cung cấp dịch vụ (vận chuyển, thanh toán, lưu trữ đám mây, AI), cơ quan nhà nước có thẩm quyền, hoặc đối tác trong giao dịch tài sản kinh doanh, nhằm phục vụ các Mục Đích đã nêu và theo quy định pháp luật.",
+    "expected_context": "Trang Privacy Policy, mục 8 Shopee có tiết lộ thông tin thu thập từ người truy cập hay không"
+  },
+  {
+    "question": "Chính sách bảo mật của Shopee quy định gì về dữ liệu của trẻ em dưới 13 tuổi?",
+    "expected_answer": "Dịch vụ của Shopee không dành cho trẻ em dưới 13 tuổi; Shopee không cố tình thu thập dữ liệu cá nhân của trẻ dưới 13 tuổi và sẽ khóa, gỡ hoặc xóa dữ liệu nếu phát hiện được gửi bởi trẻ em dưới tuổi này.",
+    "expected_context": "Trang Privacy Policy, mục 9 Thông tin về trẻ em"
+  },
+  {
+    "question": "Người mua cần cung cấp bằng chứng gì khi yêu cầu trả hàng/hoàn tiền?",
+    "expected_answer": "Ảnh, video, ảnh chụp màn hình, mã đơn hàng, hóa đơn, và giải thích rõ ràng về vấn đề gặp phải; nên lưu thêm ảnh sản phẩm bị hư hỏng, xác nhận giao hàng và lịch sử liên lạc với người bán để tăng khả năng được chấp thuận.",
+    "expected_context": "Retrieval support chunks, mục Refund and return evidence / Return refund evidence policy"
+  },
+  {
+    "question": "Người dùng có thể yêu cầu Shopee xóa hoặc ngừng xử lý dữ liệu cá nhân của mình không?",
+    "expected_answer": "Có, người dùng có thể rút lại sự đồng ý hoặc yêu cầu xóa/hạn chế xử lý dữ liệu bằng cách gửi văn bản đến Chuyên viên Bảo Vệ Dữ Liệu Cá Nhân của Shopee, tuy việc này có thể ảnh hưởng đến khả năng sử dụng một số dịch vụ.",
+    "expected_context": "Trang Privacy Policy, mục 3.4"
+  },
+  {
+    "question": "Nếu sản phẩm mua tại Shopee hết hạn bảo hành từ nhà sản xuất nhưng vẫn có lỗi do người dùng gây ra thì có được bảo hành miễn phí không?",
+    "expected_answer": "Không, sản phẩm hư hỏng do lỗi người sử dụng và không thuộc phạm vi bảo hành của nhà sản xuất sẽ không được bảo hành miễn phí và có thể phát sinh phí bảo hành.",
+    "expected_context": "Trang Warranty Policy, mục 1, phần 'Những trường hợp không được bảo hành hoặc phát sinh phí bảo hành'"
   }
 ]
